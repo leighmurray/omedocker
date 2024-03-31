@@ -1,0 +1,27 @@
+services:
+  origin:
+    build:
+      context: .
+    image: airensoft/ovenmediaengine:latest
+    ports:
+    - "9000:9000/tcp" # OVT(Origin)
+    - "1935:1935/tcp" # RTMP Provider
+    - "9999:9999/udp" # SRT
+    - "127.0.0.1:3333:3333/tcp" # WebRTC Signaling / LLHLS
+    - "3478:3478/tcp" # WebRTC TURN
+    - "10000-10004:10000-10004/udp" # WebRTC Candidate
+    - "127.0.0.1:8081:8081" # API
+    environment:
+    - OME_HOST_IP=127.0.0.1
+    - OME_ORIGIN_PORT=9000
+    - OME_RTMP_PROV_PORT=1935
+    - OME_SRT_PROV_PORT=9999
+    - OME_LLHLS_STREAM_PORT=3333
+    - OME_WEBRTC_SIGNALLING_PORT=3333
+    - OME_WEBRTC_TCP_RELAY_PORT=3478
+    - OME_WEBRTC_CANDIDATE_PORT=10000-10004/udp
+    restart: always
+    # Uncomment the following line to use your own configuration file (./origin_conf/Server.xml)
+    volumes:
+    - ./origin_conf:/opt/ovenmediaengine/bin/origin_conf
+    command: /opt/ovenmediaengine/bin/OvenMediaEngine -c origin_conf
